@@ -6,6 +6,8 @@ import {
 import { parseLessonSections } from "@/lib/content/enhancements/parseSections";
 import { LessonOutline } from "@/components/lesson/LessonOutline";
 import { LessonSection } from "@/components/lesson/LessonSection";
+import { QuizContainer } from "@/components/quiz/QuizContainer";
+import { getQuizzesForIds } from "@/lib/quiz/catalog";
 import type { LessonEnhancement } from "@/types/enhancements";
 
 type LessonExperienceProps = {
@@ -19,6 +21,7 @@ export function LessonExperience({
 }: LessonExperienceProps) {
   const sections = parseLessonSections(html);
   const enhanced = Boolean(enhancement);
+  const quizzes = getQuizzesForIds(enhancement?.quizIds);
 
   if (!enhanced) {
     return (
@@ -40,6 +43,11 @@ export function LessonExperience({
     return (
       <article className="lesson-content max-w-none">
         <div dangerouslySetInnerHTML={{ __html: html }} />
+        {quizzes.map((quiz) => (
+          <div key={quiz.id} className="mt-8">
+            <QuizContainer quiz={quiz} />
+          </div>
+        ))}
       </article>
     );
   }
@@ -60,7 +68,10 @@ export function LessonExperience({
 
   return (
     <article className="space-y-5">
-      <LessonOutline sections={visibleSections} />
+      <LessonOutline
+        sections={visibleSections}
+        includeKnowledgeCheck={quizzes.length > 0}
+      />
       {visibleSections.map((section, index) => {
         const diagrams =
           enhancement?.diagrams?.filter(
@@ -89,6 +100,10 @@ export function LessonExperience({
           </div>
         );
       })}
+
+      {quizzes.map((quiz) => (
+        <QuizContainer key={quiz.id} quiz={quiz} />
+      ))}
     </article>
   );
 }

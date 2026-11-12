@@ -19,6 +19,7 @@ const enhancements: Record<LessonKey, LessonEnhancement> = {
         diagramId: "os-layers",
       },
     ],
+    quizIds: ["quiz-os-overview-1-1"],
     progressEnabled: true,
   },
   "a-plus-core-2/operating-systems/file-systems": {
@@ -29,6 +30,7 @@ const enhancements: Record<LessonKey, LessonEnhancement> = {
         diagramId: "file-system-organization",
       },
     ],
+    quizIds: ["quiz-file-systems-1-1"],
     progressEnabled: true,
   },
 };

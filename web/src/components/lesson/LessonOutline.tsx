@@ -3,6 +3,7 @@ import type { ParsedLessonSection } from "@/lib/content/enhancements/parseSectio
 
 type LessonOutlineProps = {
   sections: ParsedLessonSection[];
+  includeKnowledgeCheck?: boolean;
 };
 
 const OUTLINE_KINDS = new Set([
@@ -18,7 +19,10 @@ const OUTLINE_KINDS = new Set([
   "quick-review",
 ]);
 
-export function LessonOutline({ sections }: LessonOutlineProps) {
+export function LessonOutline({
+  sections,
+  includeKnowledgeCheck = false,
+}: LessonOutlineProps) {
   const items = sections.filter(
     (section) =>
       section.anchorId &&
@@ -26,7 +30,7 @@ export function LessonOutline({ sections }: LessonOutlineProps) {
       OUTLINE_KINDS.has(section.kind),
   );
 
-  if (items.length < 3) {
+  if (items.length < 3 && !includeKnowledgeCheck) {
     return null;
   }
 
@@ -48,6 +52,16 @@ export function LessonOutline({ sections }: LessonOutlineProps) {
             </a>
           </li>
         ))}
+        {includeKnowledgeCheck ? (
+          <li>
+            <a
+              href="#knowledge-check"
+              className="text-sm text-teal-800 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+            >
+              <span className="font-medium">Knowledge check</span>
+            </a>
+          </li>
+        ) : null}
       </ol>
     </nav>
   );
