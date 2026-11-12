@@ -5,6 +5,7 @@ import remarkRehype from "remark-rehype";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import type { Options as SanitizeOptions } from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
+import { getDomain, getLesson, getTrack } from "@/lib/content/curriculum";
 import type { DomainId, TrackId } from "@/types/content";
 
 const schema: SanitizeOptions = {
@@ -20,49 +21,128 @@ const schema: SanitizeOptions = {
   },
 };
 
+const FOLDER_TO_DOMAIN: Record<string, DomainId> = {
+  "1-operating-systems": "operating-systems",
+  "2-security": "security",
+  "3-software-troubleshooting": "software-troubleshooting",
+  "4-operational-procedures": "operational-procedures",
+};
+
+function isSafeExternalHref(href: string): boolean {
+  return (
+    href.startsWith("https://") ||
+    href.startsWith("http://") ||
+    href.startsWith("mailto:") ||
+    href.startsWith("#")
+  );
+}
+
+function isUnsafeScheme(href: string): boolean {
+  return /^(javascript|data|vbscript|file):/i.test(href.trim());
+}
+
+function trackRoute(trackId: TrackId): string {
+  return `/tracks/${trackId}`;
+}
+
+function domainRoute(trackId: TrackId, domainId: DomainId): string {
+  return `/tracks/${trackId}/domains/${domainId}`;
+}
+
+function lessonRoute(
+  trackId: TrackId,
+  domainId: DomainId,
+  slug: string,
+  hash?: string,
+): string {
+  return `/tracks/${trackId}/domains/${domainId}/lessons/${slug}${
+    hash ? `#${hash}` : ""
+  }`;
+}
+
+/**
+ * Map a curriculum lesson link to an app route.
+ * Available lessons → lesson page.
+ * Coming-soon / unknown → domain overview (sensible fallback, no FS exposure).
+ */
+function resolveLessonHref(
+  trackId: TrackId,
+  domainId: DomainId,
+  slug: string,
+  hash?: string,
+): string {
+  if (slug.toLowerCase() === "readme") {
+    return domainRoute(trackId, domainId);
+  }
+
+  const match = getLesson(trackId, domainId, slug);
+  if (match?.lesson.status === "available") {
+    return lessonRoute(trackId, domainId, slug, hash);
+  }
+
+  // Coming soon or not indexed: keep learners in the domain navigation.
+  return domainRoute(trackId, domainId);
+}
+
 function rewriteRelativeMarkdownLinks(
   source: string,
   trackId: TrackId,
   domainId: DomainId,
 ): string {
+  const track = getTrack(trackId);
+  if (!track) {
+    return source;
+  }
+
   return source.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     (full, label: string, href: string) => {
       const trimmed = href.trim();
 
-      if (
-        trimmed.startsWith("http://") ||
-        trimmed.startsWith("https://") ||
-        trimmed.startsWith("mailto:") ||
-        trimmed.startsWith("#")
-      ) {
+      if (!trimmed || isUnsafeScheme(trimmed)) {
+        return `**${label}**`;
+      }
+
+      if (isSafeExternalHref(trimmed)) {
         return full;
+      }
+
+      // Reject absolute, unc, and null-byte paths. Relative links are matched
+      // against an allowlist below; anything else becomes plain text.
+      if (
+        trimmed.startsWith("/") ||
+        trimmed.startsWith("\\\\") ||
+        trimmed.includes("\0")
+      ) {
+        return `**${label}**`;
+      }
+
+      // Same-folder README → domain overview
+      if (/^README\.md(?:#[\w.-]+)?$/i.test(trimmed)) {
+        return `[${label}](${domainRoute(trackId, domainId)})`;
+      }
+
+      // Parent README / course map
+      if (
+        trimmed === "../README.md" ||
+        /^(\.\.\/)+README\.md(?:#[\w.-]+)?$/i.test(trimmed)
+      ) {
+        return `[${label}](${trackRoute(trackId)})`;
+      }
+
+      if (
+        trimmed === "../COURSE-MAP.md" ||
+        /COURSE-MAP\.md(?:#[\w.-]+)?$/i.test(trimmed)
+      ) {
+        return `[${label}](${trackRoute(trackId)})`;
       }
 
       // Same-domain lesson: physical-security.md
       if (/^[\w.-]+\.md(?:#[\w.-]+)?$/i.test(trimmed)) {
         const [file, hash] = trimmed.split("#");
         const slug = file.replace(/\.md$/i, "");
-        const route = `/tracks/${trackId}/domains/${domainId}/lessons/${slug}${
-          hash ? `#${hash}` : ""
-        }`;
+        const route = resolveLessonHref(trackId, domainId, slug, hash);
         return `[${label}](${route})`;
-      }
-
-      // Parent README / course map — send to domain or track overview
-      if (
-        trimmed === "../README.md" ||
-        trimmed.endsWith("/README.md") ||
-        trimmed === "../COURSE-MAP.md" ||
-        trimmed.endsWith("COURSE-MAP.md")
-      ) {
-        if (trimmed.includes("COURSE-MAP")) {
-          return `[${label}](/tracks/${trackId})`;
-        }
-        if (trimmed === "../README.md") {
-          return `[${label}](/tracks/${trackId})`;
-        }
-        return `[${label}](/tracks/${trackId}/domains/${domainId})`;
       }
 
       // Cross-domain relative path: ../1-operating-systems/foo.md
@@ -73,25 +153,38 @@ function rewriteRelativeMarkdownLinks(
         const folder = crossDomain[1];
         const slug = crossDomain[2];
         const hash = crossDomain[3];
-        const domainFromFolder =
-          folder === "1-operating-systems"
-            ? "operating-systems"
-            : folder === "2-security"
-              ? "security"
-              : folder === "3-software-troubleshooting"
-                ? "software-troubleshooting"
-                : folder === "4-operational-procedures"
-                  ? "operational-procedures"
-                  : null;
-        if (domainFromFolder) {
-          const route = `/tracks/${trackId}/domains/${domainFromFolder}/lessons/${slug}${
-            hash ? `#${hash}` : ""
-          }`;
+        const domainFromFolder = FOLDER_TO_DOMAIN[folder];
+        if (domainFromFolder && getDomain(trackId, domainFromFolder)) {
+          const route = resolveLessonHref(
+            trackId,
+            domainFromFolder,
+            slug,
+            hash,
+          );
           return `[${label}](${route})`;
         }
+        return `[${label}](${trackRoute(trackId)})`;
       }
 
-      // Leave unrecognized relative links as plain text label to avoid broken FS exposure
+      // Same-track nested path without ../ : 1-operating-systems/foo.md (course map style)
+      const nested = trimmed.match(
+        /^(\d-[a-z0-9-]+)\/([\w.-]+)\.md(?:#([\w.-]+))?$/i,
+      );
+      if (nested) {
+        const domainFromFolder = FOLDER_TO_DOMAIN[nested[1]];
+        if (domainFromFolder && getDomain(trackId, domainFromFolder)) {
+          const route = resolveLessonHref(
+            trackId,
+            domainFromFolder,
+            nested[2],
+            nested[3],
+          );
+          return `[${label}](${route})`;
+        }
+        return `[${label}](${trackRoute(trackId)})`;
+      }
+
+      // Unrecognized relative / opaque links: plain text (no FS exposure)
       return `**${label}**`;
     },
   );
