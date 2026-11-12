@@ -21,7 +21,16 @@ This domain covers security concepts, threats, device hardening, and related sup
 
 | Topic | Status | CertMaster module |
 | --- | --- | --- |
-| [Defender Antivirus](defender-antivirus.md) | Coming Soon | Module 19 |
+| [Defender Antivirus](defender-antivirus.md) | Available | Module 19 |
+| [Windows Firewall](windows-firewall.md) | Available | Module 19 |
+| [Windows Security Settings](windows-security-settings.md) | Available | Module 15 |
+| [Active Directory](active-directory.md) | Available | Module 15 |
+
+### 2.3 — Wireless Security
+
+| Topic | Status | CertMaster module |
+| --- | --- | --- |
+| [Wireless Encryption](wireless-encryption.md) | Coming Soon | Module 18 |
 
 ## Suggested Order
 
@@ -30,6 +39,10 @@ This domain covers security concepts, threats, device hardening, and related sup
 3. [Logical Security](logical-security.md)
 4. [Authentication and Access](authentication-and-access.md)
 5. [Defender Antivirus](defender-antivirus.md)
+6. [Windows Firewall](windows-firewall.md)
+7. [Windows Security Settings](windows-security-settings.md)
+8. [Active Directory](active-directory.md)
+9. [Wireless Encryption](wireless-encryption.md)
 
 ---
 

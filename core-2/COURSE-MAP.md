@@ -83,8 +83,8 @@ Start here for Core 2 operational procedures and OS foundations.
 | --- | --- | --- | --- | --- |
 | 15.1 Logical Security Concepts | Logical controls, information security | [Logical Security](2-security/logical-security.md) | 2.1 | 10:38 |
 | 15.1 Logical Security Concepts | Authentication methods | [Authentication and Access](2-security/authentication-and-access.md) | 2.1 | 12:05 |
-| 15.1 / 15.2 / 15.3 | Users/groups/UAC; login options; NTFS vs share permissions, inheritance | Windows Security Settings | 2.2 | 13:44 |
-| 15.2 / 15.3 | Domains, AD, GPO, login scripts; home folders, roaming, redirection | Active Directory | 2.2 | 27:40 |
+| 15.1 / 15.2 / 15.3 | Users/groups/UAC; login options; NTFS vs share permissions, inheritance | [Windows Security Settings](2-security/windows-security-settings.md) | 2.2 | 13:44 |
+| 15.2 / 15.3 | Domains, AD, GPO, login scripts; home folders, roaming, redirection | [Active Directory](2-security/active-directory.md) | 2.2 | 27:40 |
 | 15.3 Windows Shares | Workgroups, file/printer sharing | Windows Network Technologies | 1.7 | 8:37 |
 | 15.3 Windows Shares | Mapping drives | Review: Windows Network Connections | 1.7 | *(Mod 13)* |
 
@@ -135,7 +135,7 @@ Heaviest module.
 | 18.1 | Password attacks | Password Attacks | 2.5 | 10:23 |
 | 18.1 | XSS | Cross-site Scripting | 2.5 | 7:54 |
 | 18.1 | SQL injection | SQL Injection Attacks | 2.5 | 6:18 |
-| 18.2 Wireless Security Protocols | WPA, Wi-Fi authentication | Wireless Encryption | 2.3 | 6:19 |
+| 18.2 Wireless Security Protocols | WPA, Wi-Fi authentication | [Wireless Encryption](2-security/wireless-encryption.md) | 2.3 | 6:19 |
 | 18.2 Wireless Security Protocols | Enterprise auth, RADIUS, TACACS+, Kerberos | Authentication Methods | 2.3 | 7:58 |
 | 18.3 SOHO Router Security | Setup, firmware, firewall, port forwarding, UPnP, screened subnets | Securing a SOHO Network | 2.10 | 15:03 |
 | 18.4 Additional Security Measures | Alarms and surveillance | [Physical Security](2-security/physical-security.md) | 2.1 | 10:06 |
@@ -149,7 +149,7 @@ Heaviest module.
 | --- | --- | --- | --- | --- |
 | 19.1 Account Security | Passwords, end-user practices, default admin, guest, policies | Security Best Practices | 2.7 | 15:15 |
 | 19.2 Workstation Security | Defender Antivirus | [Defender Antivirus](2-security/defender-antivirus.md) | 2.2 | 5:01 |
-| 19.2 Workstation Security | Defender Firewall | Windows Firewall | 2.2 | 5:20 |
+| 19.2 Workstation Security | Defender Firewall | [Windows Firewall](2-security/windows-firewall.md) | 2.2 | 5:20 |
 | 19.2 Workstation Security | EFS, BitLocker | Review: Windows Security Settings | 2.2 | *(Mod 15)* |
 | 19.3 Browser Security | Selection, settings, extensions, patching, certificates, privacy | Browser Security | 2.11 | 18:56 |
 | 19.4 Troubleshoot Workstation Security | Malware vectors, payloads, ransomware | Malware | 2.4 | 17:23 |
@@ -197,9 +197,9 @@ Heaviest module.
 
 ## Current Build Focus
 
-**Authentication and Access (2.1)** — **Available**.
+**Active Directory (2.2)** — **Available**.
 
-**Next:** Defender Antivirus (2.2) — paste the transcript when ready.
+**Next:** Wireless Encryption (2.3) — paste the transcript when ready.
 
 macOS Overview (1.8) and Installing Operating Systems (1.2) are still stubbed.
 

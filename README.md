@@ -1,10 +1,10 @@
-# CompTIA A+ Learning Guide
+# CompTIA A+ and Network+ Learning Guide
 
-A beginner-friendly learning resource for CompTIA A+ and entry-level IT support.
+A beginner-friendly learning resource for CompTIA A+, CompTIA Network+, and entry-level IT support.
 
 ## About This Repository
 
-This repository helps beginners understand CompTIA A+ concepts using:
+This repository helps beginners understand CompTIA A+ and Network+ concepts using:
 
 - Plain-language explanations
 - Real-world analogies
@@ -14,7 +14,7 @@ This repository helps beginners understand CompTIA A+ concepts using:
 - Study guides
 - Practice scenarios
 
-It is designed to supplement official CompTIA learning resources, not replace them. Use it alongside CompTIA materials, instructor-led courses, or other study tools as you prepare for the A+ exams and build entry-level IT support skills.
+It is designed to supplement official CompTIA learning resources, not replace them. Use it alongside CompTIA materials, instructor-led courses, or other study tools as you prepare for the A+ and Network+ exams and build entry-level IT support skills.
 
 ## Who This Is For
 
@@ -22,7 +22,7 @@ It is designed to supplement official CompTIA learning resources, not replace th
 - Beginners with little or no IT experience
 - IT support learners
 - Help desk learners
-- Students preparing for CompTIA A+ Core 1 (220-1201) and Core 2 (220-1202)
+- Students preparing for CompTIA A+ Core 1 (220-1201), Core 2 (220-1202), and Network+ (N10-009)
 
 ## How to Use This Repository
 
@@ -38,7 +38,7 @@ Follow this learning flow:
 
 ## Course Navigation
 
-### Core 1 — 220-1201
+### A+ Core 1 — 220-1201
 
 - [Mobile Devices](core-1/1-mobile-devices/README.md)
 - [Networking](core-1/2-networking/README.md)
@@ -46,12 +46,17 @@ Follow this learning flow:
 - [Virtualization and Cloud](core-1/4-virtualization-and-cloud/README.md)
 - [Hardware and Network Troubleshooting](core-1/5-hardware-and-network-troubleshooting/README.md)
 
-### Core 2 — 220-1202
+### A+ Core 2 — 220-1202
 
 - [Operating Systems](core-2/1-operating-systems/README.md)
 - [Security](core-2/2-security/README.md)
 - [Software Troubleshooting](core-2/3-software-troubleshooting/README.md)
 - [Operational Procedures](core-2/4-operational-procedures/README.md)
+
+### Network+ — N10-009
+
+- [Network+ course](network-plus/README.md)
+- [Course map](network-plus/COURSE-MAP.md)
 
 ### Extra Practice
 
@@ -61,4 +66,4 @@ Follow this learning flow:
 
 ## Important Note
 
-This repository is an independent educational resource and is not affiliated with or endorsed by CompTIA. CompTIA and A+ are trademarks of CompTIA, Inc.
+This repository is an independent educational resource and is not affiliated with or endorsed by CompTIA. CompTIA, A+, and Network+ are trademarks of CompTIA, Inc.
