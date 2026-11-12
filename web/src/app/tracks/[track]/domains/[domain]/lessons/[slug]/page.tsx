@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LessonContent } from "@/components/lesson/LessonContent";
 import { StatusBadge } from "@/components/curriculum/StatusBadge";
+import { LessonExperience } from "@/components/lesson/LessonExperience";
+import { LessonPager } from "@/components/lesson/LessonPager";
 import { getDomain, getLesson, getTrack } from "@/lib/content/curriculum";
+import { getLessonEnhancement } from "@/lib/content/enhancements/registry";
 import { loadIndexedLesson } from "@/lib/content/loadLesson";
 
 type PageProps = {
@@ -72,6 +74,12 @@ export default async function LessonPage({ params }: PageProps) {
     notFound();
   }
 
+  const enhancement = getLessonEnhancement(
+    match.track.id,
+    match.domain.id,
+    match.lesson.slug,
+  );
+
   const domainMatch = getDomain(trackId, domainId);
   const lessonIndex =
     domainMatch?.domain.lessons.findIndex((item) => item.slug === slug) ?? -1;
@@ -123,35 +131,23 @@ export default async function LessonPage({ params }: PageProps) {
             Objective {match.lesson.objective}
           </span>
         ) : null}
-      </div>
-
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm sm:px-8">
-        <LessonContent html={loaded.html} />
-      </div>
-
-      <nav
-        aria-label="Lesson sequence"
-        className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-between"
-      >
-        {previous && previous.status === "available" ? (
-          <Link
-            href={`/tracks/${match.track.id}/domains/${match.domain.id}/lessons/${previous.slug}`}
-            className="text-sm font-medium text-teal-800 underline-offset-2 hover:underline"
-          >
-            ← {previous.title}
-          </Link>
-        ) : (
-          <span />
-        )}
-        {next ? (
-          <Link
-            href={`/tracks/${match.track.id}/domains/${match.domain.id}/lessons/${next.slug}`}
-            className="text-sm font-medium text-teal-800 underline-offset-2 hover:underline sm:text-right"
-          >
-            {next.title} →
-          </Link>
+        {enhancement ? (
+          <span className="inline-flex rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-900 ring-1 ring-inset ring-teal-600/20">
+            Enhanced lesson
+          </span>
         ) : null}
-      </nav>
+      </div>
+
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white px-4 py-6 shadow-sm sm:px-6 sm:py-8">
+        <LessonExperience html={loaded.html} enhancement={enhancement} />
+      </div>
+
+      <LessonPager
+        trackId={match.track.id}
+        domainId={match.domain.id}
+        previous={previous}
+        next={next}
+      />
     </div>
   );
 }

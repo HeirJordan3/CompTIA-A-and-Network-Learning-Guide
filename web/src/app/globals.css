@@ -142,3 +142,21 @@ body {
   border-top: 1px solid #e2e8f0;
   margin: 2rem 0;
 }
+
+.lesson-content--section > * + * {
+  margin-top: 1rem;
+}
+
+.lesson-content--section h2 {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.lesson-section + .lesson-section {
+  margin-top: 0;
+}
+
+.lesson-section--plain .lesson-content h1 {
+  margin-bottom: 0.75rem;
+}
