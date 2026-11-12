@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+.lesson-content {
+  color: #0f172a;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.lesson-content > * + * {
+  margin-top: 1.1rem;
+}
+
+.lesson-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-top: 0;
+}
+
+.lesson-content h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 2.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.lesson-content h3 {
+  font-size: 1.15rem;
+  font-weight: 650;
+  margin-top: 1.75rem;
+}
+
+.lesson-content p,
+.lesson-content li {
+  color: #1e293b;
+}
+
+.lesson-content a {
+  color: #0f766e;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lesson-content a:focus-visible {
+  outline: 2px solid #0f766e;
+  outline-offset: 2px;
+}
+
+.lesson-content ul,
+.lesson-content ol {
+  padding-left: 1.35rem;
+}
+
+.lesson-content ul {
+  list-style: disc;
+}
+
+.lesson-content ol {
+  list-style: decimal;
+}
+
+.lesson-content li + li {
+  margin-top: 0.4rem;
+}
+
+.lesson-content strong {
+  font-weight: 650;
+  color: #0f172a;
+}
+
+.lesson-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.35rem;
+}
+
+.lesson-content pre {
+  overflow-x: auto;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem 1.1rem;
+  font-size: 0.9rem;
+}
+
+.lesson-content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.lesson-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  display: block;
+  overflow-x: auto;
+}
+
+.lesson-content thead {
+  background: #f1f5f9;
+}
+
+.lesson-content th,
+.lesson-content td {
+  border: 1px solid #cbd5e1;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.lesson-content th {
+  font-weight: 650;
+  color: #0f172a;
+}
+
+.lesson-content blockquote {
+  border-left: 4px solid #99f6e4;
+  padding-left: 1rem;
+  color: #334155;
+}
+
+.lesson-content hr {
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 2rem 0;
+}
