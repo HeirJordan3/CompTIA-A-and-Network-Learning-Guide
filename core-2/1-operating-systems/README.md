@@ -34,7 +34,7 @@ This domain covers operating system types, file systems, installation, Windows t
 
 | Topic | Status | CertMaster module |
 | --- | --- | --- |
-| [Installing Operating Systems](installing-operating-systems.md) | Coming Soon | Module 16 |
+| [Installing Operating Systems](installing-operating-systems.md) | Available | Module 16 |
 
 ### 1.6 — Windows Settings
 
