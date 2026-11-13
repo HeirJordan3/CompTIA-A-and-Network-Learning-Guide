@@ -3,32 +3,44 @@
 CompTIA A+ Core 2 — 220-1202  
 Objective 1.7 — Given a scenario, configure Microsoft Windows networking features on a client/desktop
 
-## What You Need to Know
+## Lesson Overview
 
-By the end of this lesson, you should understand:
+**Windows Defender Firewall** is the built-in **host-based** (personal) firewall on Windows. It decides which network traffic may reach this PC (**inbound**) and which traffic this PC may send (**outbound**). Microsoft intends it to stay **enabled**.
 
-- What **Windows Defender Firewall** is and why it stays on
-- **Domain**, **private**, and **public** profiles
-- Broad settings: block all incoming, and notify when a new app is blocked
-- **Windows Defender Firewall with Advanced Security**
-- How to create an inbound rule by program, port, predefined rule, or custom rule
+A coffee-shop network should not use the same trust rules as a company domain PC. Firewall profiles and rules are how technicians allow a needed app or port without permanently turning protection off.
 
-## What Is It?
+**Scope note:** This Objective **1.7** lesson focuses on configuring firewall profiles and rules as a Windows networking feature. The Domain 2 security lesson [Windows Firewall](../2-security/windows-firewall.md) covers the **Windows Security** app view (Firewall & network protection, providers). Use both as complementary views of the same product — not conflicting products.
 
-**Windows Defender Firewall** is the personal firewall built into Windows. It decides which network traffic is allowed to reach the PC and which traffic the PC may send. It is meant to stay **enabled**.
+## Learning Objectives
 
-## Why Does It Matter?
+By the end of this lesson, you should be able to:
 
-A PC on a coffee-shop network should not use the same rules as a PC on the company domain. Firewall settings are where you:
+- Explain what a host-based firewall does and why it should stay on
+- Distinguish inbound vs outbound traffic
+- Compare Domain, Private, and Public (guest) network profiles
+- Configure broad profile settings, including “block all incoming connections”
+- Create program, port, predefined, and custom inbound rules
+- Open Windows Defender Firewall with Advanced Security
+- Apply least-privilege thinking and avoid routine firewall disablement
 
-- Temporarily turn the firewall off while you test a connection
-- Block unexpected inbound connections
-- Allow one app or one port
-- Build a custom rule, such as blocking unencrypted web traffic on TCP port 80
+## Key Terms and Definitions
 
-Changing these settings requires **elevated** (administrator) rights.
+| Term | Meaning |
+| --- | --- |
+| Host-based firewall | Firewall software running on the PC itself |
+| Inbound traffic | Packets coming **into** this computer |
+| Outbound traffic | Packets leaving this computer |
+| Network profile | Rule set for Domain, Private, or Public networks |
+| Allow rule | Exception that permits matching traffic |
+| Block rule | Exception that denies matching traffic |
+| Port | Number that identifies a service (for example TCP 80) |
+| Protocol | Rules for the conversation (commonly TCP or UDP) |
+| Predefined rule | Built-in Windows rule for a known app or feature |
+| Custom rule | Rule you build with your own program/port/address choices |
+| Least privilege | Grant only the access needed — nothing extra |
+| Elevated rights | Administrator permission required to change the firewall |
 
-## Real-World Analogy
+## Beginner Analogy
 
 Think of the firewall as a building receptionist with three rulebooks:
 
@@ -38,14 +50,27 @@ Think of the firewall as a building receptionist with three rulebooks:
 | Private | A trusted home or small office |
 | Public / guest | A coffee shop or hotel |
 
-Advanced Security is the full policy binder: who may come in, who may go out, and a log of what was blocked.
+Advanced Security is the full policy binder: who may come in, who may go out, and monitoring of what was blocked.
 
-## How It Works
+## Why Technicians Care
 
-### Where to Open It
+Firewall settings are where you:
 
-- Control Panel → **Windows Defender Firewall**
-- Search for Windows Defender Firewall
+- Confirm the firewall is on for the current profile
+- Temporarily test whether the firewall is blocking a needed connection (**short test only**)
+- Allow one app or one port with a precise rule
+- Block unwanted inbound services (example: unencrypted web on TCP 80)
+
+Changing these settings requires **elevated** (administrator) rights.
+
+## Opening Windows Defender Firewall
+
+**Prerequisites:** Administrator account for changes.
+
+| Path | Notes |
+| --- | --- |
+| Control Panel → **Windows Defender Firewall** | Classic applet path used in this lesson |
+| Search for **Windows Defender Firewall** | Works on Windows 10 and Windows 11 |
 
 The main page shows separate status for:
 
@@ -53,32 +78,53 @@ The main page shows separate status for:
 - Private networks
 - Guest or public networks
 
-Each profile can have its own settings. The page also shows whether the firewall is on, whether it blocks connections that are not on the allow list, which network you are on now, and whether it notifies you when it blocks a new app.
+You also see whether the firewall is on, whether it blocks connections not on the allow list, which network you are on now, and whether it notifies you when it blocks a new app.
 
-### Broad Settings for Each Profile
+**Expected outcome:** Profile status page with on/off and notification settings per profile type.
+
+## Network Profiles
+
+| Profile | Typical place | Why it matters |
+| --- | --- | --- |
+| Domain | Domain-joined corporate network | Separate company policy set |
+| Private | Home / trusted work LAN | More sharing may be appropriate |
+| Public / guest | Cafe, hotel, open Wi-Fi | Stricter default posture |
+
+Do not assume one setting covers every network. Each profile can differ.
+
+## Broad Settings for Each Profile
 
 For a private network, a public network, or both, you can:
 
 | Setting | Effect |
 | --- | --- |
 | Turn Windows Firewall on | The profile filters traffic |
-| Block all incoming connections | Blocks inbound traffic **even if** you previously allowed it — use this when you do not want anyone connecting in |
+| Block all incoming connections | Blocks inbound traffic **even if** you previously allowed it — use when you do not want anyone connecting in |
 | Notify when a new app is blocked | Windows tells you instead of blocking silently |
 
-Turn the firewall off only for a short troubleshooting test, then turn it back on. That change needs administrator rights.
+### Least privilege and safe troubleshooting
 
-### More Precise Rules
+| Practice | Why |
+| --- | --- |
+| Prefer a precise allow/block rule | Opens only what is needed |
+| Prefer “block all incoming” over permanent disable when traveling | Stops inbound access without removing outbound protection |
+| Disable firewall only briefly to test | Confirms whether the firewall is the blocker |
+| Turn it back on immediately after the test | Restores host protection |
+
+**Disabling the entire firewall is not an appropriate routine fix.** Treat it as a short diagnostic step, then restore protection and create the least-privilege rule that solves the real need.
+
+## More Precise Rules
 
 Broad on/off settings are not always enough. You can allow inbound traffic for:
 
 - One **application** (a specific program)
 - One **port number**, when you do not want to name an executable
 
-Windows also includes a long list of **predefined** apps and features you can enable or disable depending on the network. If none of those fit, build your own exception.
+Windows also includes **predefined** apps and features you can enable or disable depending on the network. If none fit, build your own exception.
 
-### Advanced Security
+## Windows Defender Firewall with Advanced Security
 
-**Windows Defender Firewall with Advanced Security** is the administrator view. Open it from the left side of the firewall page.
+Open **Advanced settings** from the left side of the firewall page (administrator view).
 
 | Section | What it holds |
 | --- | --- |
@@ -87,9 +133,22 @@ Windows also includes a long list of **predefined** apps and features you can en
 | Connection security rules | Extra requirements for how connections are protected |
 | Monitoring | What the firewall is doing |
 
-### Creating an Inbound Rule
+## Creating an Inbound Rule (Procedure)
 
-Right-click **Inbound Rules** → **New Rule**. Choose a rule type:
+**Goal example (lab/teaching):** Create an **inbound** block for **TCP local port 80** so other devices cannot open unencrypted HTTP **to services listening on this PC**.
+
+| Detail | Value for this example |
+| --- | --- |
+| Direction | **Inbound** (traffic coming into this PC) |
+| Protocol / port | TCP, local port **80** |
+| Action | **Block** |
+| What it does **not** do by itself | It does not block this PC’s **outbound** browsing to other websites |
+
+**Impact warning:** If this computer is hosting a website, intranet page, or any service that legitimately uses HTTP on port 80, this inbound block will interrupt that communication. Use the example carefully in labs, and remove or disable the rule when you are done.
+
+1. Open **Windows Defender Firewall with Advanced Security**.
+2. Right-click **Inbound Rules** → **New Rule**.
+3. Choose a rule type:
 
 | Type | Use it when |
 | --- | --- |
@@ -98,22 +157,35 @@ Right-click **Inbound Rules** → **New Rule**. Choose a rule type:
 | Predefined | You want a rule Windows already includes |
 | Custom | You need program, port, and address choices together |
 
-Example: block unencrypted web traffic **into** this PC on **TCP port 80**.
+4. For this example, choose **Custom** → Next.
+5. **Program:** leave it so the rule applies to all programs → Next.
+6. **Protocol and ports:** TCP; local port **80** (specific port, not all ports). Remote port can be **any** → Next.
+7. **Scope:** Any local / any remote (or specific addresses if required) → Next.
+8. **Action:** **Block the connection** → Next.
+9. **Profile:** Domain, Private, and/or Public (leave all checked to apply everywhere) → Next.
+10. **Name:** for example `Block Unencrypted Web Traffic` → Finish.
 
-1. Choose **Custom**.
-2. **Program:** leave it set so the rule applies to all programs.
-3. **Protocol and ports:** TCP, local port **80** (a specific port, not all ports). Remote port can be **any**.
-4. **Scope:** which IP addresses. **Any** local address and **any** remote address, or name specific addresses.
-5. **Action:**
-   - Allow the connection
-   - Allow the connection if it is secure
-   - **Block the connection** (this example)
-6. **Profile:** Domain, Private, and/or Public. Leave all checked to apply everywhere.
-7. **Name:** for example, `Block Unencrypted Web Traffic`, then Finish.
+**Expected outcome:** A new **inbound** rule blocking TCP local port 80 on the selected profiles.
 
-That rule blocks inbound TCP port 80, the non-encrypted form of web traffic, on the profiles you selected.
+### Safely disable or remove the example rule
 
-## Side-by-Side Comparison
+When the lab or test is finished:
+
+1. Open **Windows Defender Firewall with Advanced Security** → **Inbound Rules**.
+2. Find the rule by name (for example `Block Unencrypted Web Traffic`).
+3. Prefer **Disable Rule** first to stop the block without deleting documentation of what you tested.
+4. Or right-click → **Delete** if you no longer need the rule at all.
+
+**Common failure conditions:**
+
+- Rule created outbound instead of inbound
+- Wrong local port
+- Wrong profile checked (rule exists but does not apply on the current network)
+- Non-admin account cannot save the change
+
+**Safety:** Blocking the wrong port can break needed services. Name rules clearly, document why they exist, and disable/delete temporary lab rules promptly. Do **not** leave the entire firewall permanently off as a workaround.
+
+## Comparison Table
 
 | Goal | Where |
 | --- | --- |
@@ -125,22 +197,13 @@ That rule blocks inbound TCP port 80, the non-encrypted form of web traffic, on 
 | See outbound rules and monitoring | Windows Defender Firewall with Advanced Security |
 | Turn the firewall off to test | Firewall settings — needs administrator rights; turn it back on |
 
-## Key Terms
-
-| Term | Meaning |
-| --- | --- |
-| Windows Defender Firewall | Built-in Windows personal firewall |
-| Profile | A rule set for domain, private, or public networks |
-| Inbound rule | Controls traffic coming into the PC |
-| Outbound rule | Controls traffic leaving the PC |
-| Predefined rule | A rule Windows already includes for a known app or feature |
-| Custom rule | A rule you build with your own program, port, and address choices |
-| Port 80 | TCP port used for unencrypted web traffic |
-| Elevated rights | Administrator permission required to change the firewall |
-
 ## CompTIA Exam Connections
 
-| Clue | Think |
+Coverage aligns with course-map / Messer Configuring Windows Firewall transcript for objective 1.7 networking features. Official CompTIA PDF objectives are not in-repo, so this is not official item-bank verification.
+
+### Keywords and clues
+
+| Clue in a scenario | Likely focus |
 | --- | --- |
 | Firewall that ships with Windows | Windows Defender Firewall |
 | Stricter rules on public Wi-Fi than at home | Separate public and private profiles |
@@ -152,37 +215,31 @@ That rule blocks inbound TCP port 80, the non-encrypted form of web traffic, on 
 | Need outbound rules or monitoring | Firewall with Advanced Security |
 | Cannot turn the firewall off | Need an elevated account |
 
-## Common Mix-Ups
+### BEST / MOST likely wording
 
-### Turning the firewall off is a normal fix
+- If the question asks for a temporary test, brief disable may appear — but restoring the firewall / using a precise rule is the better normal practice.
+- If only one app must accept connections, a **program** allow rule is MORE appropriate than disabling the firewall.
 
-It is a **temporary** troubleshooting step. Leave Windows Defender Firewall enabled for normal use.
+## Common Mistakes and Misconceptions
 
-### One firewall setting covers every network
-
-Domain, private, and public profiles can each have different rules.
-
-### “Block all incoming” still honors your allow list
-
-That option blocks incoming connections **including** ones you explicitly allowed.
-
-### Port 80 is secure web traffic
-
-Port 80 is **unencrypted** web traffic. Encrypted web traffic uses a different port.
-
-### Any user can create firewall rules
-
-Changing the firewall requires **administrator** rights.
+- **“Turning the firewall off is a normal fix.”** It is a temporary troubleshooting step. Leave it enabled for normal use.
+- **“One firewall setting covers every network.”** Domain, private, and public profiles can each differ.
+- **“Block all incoming still honors your allow list.”** That option blocks incoming connections **including** ones you explicitly allowed.
+- **“Port 80 is secure web traffic.”** Port 80 is **unencrypted** web traffic. Encrypted web uses a different port (commonly 443).
+- **“Any user can create firewall rules.”** Changing the firewall requires administrator rights.
+- **“This lesson replaces the Domain 2 firewall security lesson.”** Complementary views — see [Windows Firewall](../2-security/windows-firewall.md).
 
 ## Quick Review
 
 | Topic | Remember |
 | --- | --- |
 | Product | Windows Defender Firewall — leave it on |
+| Direction | Inbound = into PC; outbound = leaving PC |
 | Profiles | Domain, private, public/guest |
 | Broad options | On/off, block all incoming, notify on new apps |
 | Precision | Program, port, predefined, or custom |
 | Advanced | Inbound, outbound, connection security, monitoring |
+| Practice | Least privilege rules; disable only for short tests |
 | Example rule | Custom inbound block, TCP local port 80, all profiles |
 
 ---
@@ -192,5 +249,6 @@ Changing the firewall requires **administrator** rights.
 - Previous Topic: [Windows Network Technologies](windows-network-technologies.md)
 - Next Topic: [Windows IP Address Configuration](windows-ip-address-configuration.md)
 - Related: [The Windows Control Panel](the-windows-control-panel.md)
+- Related (Domain 2 security view): [Windows Firewall](../2-security/windows-firewall.md)
 - Back to [Domain 1 — Operating Systems](README.md)
 - Course Map: [Core 2 Study Path](../COURSE-MAP.md)
