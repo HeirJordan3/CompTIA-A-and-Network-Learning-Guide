@@ -3,27 +3,43 @@
 CompTIA A+ Core 2 — 220-1202  
 Objective 1.5 — Given a scenario, use the appropriate Windows command-line tools
 
-## What You Need to Know
+## Lesson Overview
 
-By the end of this lesson, you should understand:
+These Windows command-line tools help you troubleshoot networking from Command Prompt. They show how this PC is addressed, whether another device answers, which apps have connections open, how names become IP addresses, which Windows shares exist, and which routers sit between you and a destination.
 
-- **ipconfig** and **ipconfig /all**
-- **ping** and what a reply tells you
-- **netstat**, including `-a`, `-b`, and `-n`
-- **nslookup**
-- **net view**, **net use**, and **net user**
-- **tracert** and how Time to Live finds each hop
-- **pathping** as traceroute plus per-hop loss stats
+Before you change anything, **read** the current configuration. Then test reachability, name resolution, and the path. That separates “this PC has a bad address” from “DNS is broken” from “a router in the middle dropped the traffic.”
 
-## What Is It?
+## Learning Objectives
 
-These are Windows command-line tools for network troubleshooting. They show how this PC is addressed, whether another device answers, which apps have connections open, how names become IP addresses, which Windows shares exist, and which routers sit between you and a destination.
+By the end of this lesson, you should be able to:
 
-## Why Does It Matter?
+- Read local addressing with `ipconfig` and `ipconfig /all`
+- Interpret `ping` replies, loss, and round-trip time
+- Use `netstat` options (`-a`, `-b`, `-n`) and know when elevation is required
+- Resolve names with `nslookup`
+- Use `net view`, `net use`, and `net user` for shares and accounts
+- Trace paths with `tracert` and explain TTL as a hop limit
+- Use `pathping` to find per-hop loss
+- Follow a safe troubleshooting workflow that distinguishes DNS, connectivity, routing, and local configuration problems
 
-Every PC can have a different network setup. Before you change anything, read the current configuration. Then test reachability, name resolution, and the path. That separates “this PC has a bad address” from “a router in the middle dropped the traffic.”
+## Key Terms and Definitions
 
-## Real-World Analogy
+| Term | Meaning |
+| --- | --- |
+| ipconfig | Shows this PC’s IP configuration |
+| ping | ICMP reachability test |
+| ICMP | Internet Control Message Protocol |
+| Round-trip time | How long a reply takes, in milliseconds |
+| netstat | Lists network connections and states |
+| nslookup | DNS lookup tool |
+| net view / net use / net user | List shares, map a share, or inspect an account |
+| tracert | Windows traceroute |
+| Hop | One router along the path |
+| TTL | Time to live — a hop limit on IPv4 packets, not a clock |
+| pathping | Traceroute plus per-hop loss statistics |
+| Default gateway | Local router address used to leave this subnet |
+
+## Beginner Analogy
 
 | Command | Like |
 | --- | --- |
@@ -35,13 +51,34 @@ Every PC can have a different network setup. Before you change anything, read th
 | tracert | Listing every intersection between here and the destination |
 | pathping | That same route, then timing how many cars get lost at each intersection |
 
-## How It Works
+## Safe Troubleshooting Workflow
+
+Use this order on most tickets:
+
+1. **Confirm local configuration** — `ipconfig` then `ipconfig /all`
+2. **Test local connectivity** — ping the default gateway
+3. **Test beyond the LAN** — ping a known public IP (if policy allows)
+4. **Test name resolution** — `nslookup` and/or ping a hostname
+5. **Inspect connections/apps** — `netstat` (elevate for `-b`)
+6. **Map the path** — `tracert` or `pathping` when the problem is “somewhere in the middle”
+
+| Symptom pattern | Likely focus |
+| --- | --- |
+| Wrong/missing IP, DHCP off unexpectedly | Local configuration (`ipconfig /all`) |
+| Gateway fails, nothing else works | Local LAN / cable / Wi-Fi / gateway |
+| IP ping works, names fail | DNS (`nslookup`, DNS server fields) |
+| Names resolve, distant sites fail | Routing / upstream path (`tracert`, `pathping`) |
+| Browser oddities, many open sockets | Local connections (`netstat`) |
+
+**Administrator note:** Most read-only checks work in a normal prompt. `netstat -b` needs an elevated Command Prompt. Share/account commands may also require appropriate rights.
+
+## Command Reference
 
 ### ipconfig
 
 **ipconfig** shows how this computer is set up on the network: IPv4 and IPv6 addresses, subnet masks, and default gateways. It works for wired Ethernet and wireless adapters.
 
-**ipconfig /all** adds more:
+**ipconfig /all** adds:
 
 - Host name and DNS suffix
 - DNS servers
@@ -50,9 +87,11 @@ Every PC can have a different network setup. Before you change anything, read th
 
 Run plain `ipconfig` first. Use `/all` when you need DNS, DHCP, and host details.
 
+**Example interpretation:** If DHCP is enabled but you have no default gateway, the PC may not leave the local subnet even if it has a link-local or incomplete configuration.
+
 ### ping
 
-**ping** tests whether another device answers. It sends a small packet and waits for a reply using **ICMP** (Internet Control Message Protocol).
+**ping** tests whether another device answers. It sends a small packet and waits for a reply using **ICMP**.
 
 A typical test sends **four** pings of **32 bytes**. The summary shows:
 
@@ -63,7 +102,9 @@ A typical test sends **four** pings of **32 bytes**. The summary shows:
 | Round-trip time (ms) | How long the reply took (minimum, maximum, average) |
 | Time to live (TTL) | How many hops the reply is still allowed to travel |
 
-Example: ping the DNS server address you saw in `ipconfig` (such as `192.168.1.155`). Replies mean you can reach that server. Large or uneven times mean the path is slow or uneven, even if it works.
+Example: ping the DNS server address from `ipconfig` (such as `192.168.1.155`). Replies mean you can reach that server. Large or uneven times mean the path is slow or uneven, even if it works.
+
+**Support scenario:** Gateway pings succeed, but `nslookup www.example.com` fails → focus on DNS servers, not “the whole internet is down.”
 
 ### netstat
 
@@ -85,7 +126,7 @@ Columns usually include:
 | Foreign address | The other device |
 | State | For example **ESTABLISHED** or **CLOSE_WAIT** |
 
-Opening a browser adds rows because the browser opened new connections. **netstat -b** needs an **elevated** Command Prompt. After you open a site, those HTTPS rows often show `chrome.exe` or another browser as the executable.
+Opening a browser adds rows because the browser opened new connections. **`netstat -b` needs an elevated Command Prompt.** After you open a site, HTTPS rows often show `chrome.exe` or another browser as the executable.
 
 ### nslookup
 
@@ -95,11 +136,13 @@ Opening a browser adds rows because the browser opened new connections. **netsta
 nslookup www.example.com
 ```
 
-The reply names the DNS server that answered (the one from `ipconfig`) and the address or addresses for that name. More than one address is normal when a name is set up with redundancy.
+The reply names the DNS server that answered (often the one from `ipconfig`) and the address or addresses for that name. More than one address is normal when a name is set up with redundancy.
+
+**How to interpret:** If `nslookup` fails but ping to an IP works, treat it as a DNS problem first — not a total connectivity failure.
 
 ### NET commands
 
-**net** is a Windows command for shares and local or domain accounts. It is not only a TCP/IP test.
+**net** is a Windows command for shares and local or domain accounts. It is not only a TCP/IP path test.
 
 | Command | Use |
 | --- | --- |
@@ -115,7 +158,7 @@ The reply names the DNS server that answered (the one from `ipconfig`) and the a
 
 **tracert** is the Windows name for traceroute. It lists each router between you and a destination. Like ping, it uses **ICMP**.
 
-**Time to live (TTL)** in IPv4 is **not a clock**. It is a **hop count**. A hop is one pass through a router. Each router subtracts 1 from the TTL. When TTL hits **0**, that router sends back **Time to Live Exceeded** and does not forward the packet.
+**Time to live (TTL)** in IPv4 is **not a clock**. It is a **hop count**. Each router subtracts 1 from the TTL. When TTL hits **0**, that router sends back **Time to Live Exceeded** and does not forward the packet.
 
 tracert uses that on purpose:
 
@@ -138,7 +181,9 @@ Some firewalls block ICMP. Those hops can show timeouts even when other traffic 
 
 The report shows each hop, packets sent, packets lost, and addresses. A hop with no statistics often means a firewall or filter at that router, not necessarily that the whole path is down.
 
-## Side-by-Side Comparison
+**Support scenario:** Users say “the VPN is fine, but the SaaS app is slow.” `pathping` to the app’s IP can show which hop is losing packets.
+
+## Comparison Table
 
 | Question | Command |
 | --- | --- |
@@ -155,25 +200,13 @@ The report shows each hop, packets sent, packets lost, and addresses. A hop with
 | Which routers are on the path? | `tracert` |
 | Which hop is losing packets? | `pathping` |
 
-## Key Terms
-
-| Term | Meaning |
-| --- | --- |
-| ipconfig | Shows this PC’s IP configuration |
-| ping | ICMP reachability test |
-| ICMP | Internet Control Message Protocol |
-| Round-trip time | How long a reply takes, in milliseconds |
-| netstat | Lists network connections and states |
-| nslookup | DNS lookup tool |
-| net view / net use / net user | List shares, map a share, or inspect an account |
-| tracert | Windows traceroute |
-| Hop | One router along the path |
-| TTL | Time to live — a hop limit, not a clock |
-| pathping | Traceroute plus per-hop loss statistics |
-
 ## CompTIA Exam Connections
 
-| Clue | Think |
+Coverage aligns with course-map / CertMaster Windows command-line networking tools under objective 1.5 and the Professor Messer Windows Network Command Line transcript. Not an official exam-item guarantee.
+
+### Keywords and clues
+
+| Clue in a scenario | Likely focus |
 | --- | --- |
 | Need IP, subnet, gateway, DNS, DHCP | `ipconfig /all` |
 | “Is the server up?” from this PC | `ping` |
@@ -188,32 +221,26 @@ The report shows each hop, packets sent, packets lost, and addresses. A hop with
 | Where along the path are packets dropped? | `pathping` |
 | One hop shows no replies | ICMP filtered — often a firewall |
 
-## Common Mix-Ups
+### BEST / MOST likely wording
 
-### TTL is measured in seconds
+- If names fail but IPs work, DNS tooling (`nslookup` / DNS server check) is the BEST next step.
+- If you need the owning executable, elevated `netstat -b` is MORE useful than plain `netstat`.
+- If the question asks which hop drops packets, `pathping` is MORE specific than a single `ping`.
 
-On an IPv4 packet, TTL is a **hop counter**. Routers decrease it by 1. It is not a time of day.
+## Common Mistakes and Misconceptions
 
-### ping and tracert prove every application works
-
-They prove **ICMP** reachability and the router path. A firewall can block ICMP while web traffic still works, or the reverse.
-
-### netstat -b works in a normal prompt
-
-Showing the executable needs an **administrator** Command Prompt.
-
-### net view tests an IP route
-
-`net view`, `net use`, and `net user` are **Windows share and account** commands. Use ping, tracert, and pathping for the IP path.
-
-### pathping is a faster ping
-
-The first phase is a traceroute. The second phase measures each hop and can take several minutes.
+- **“TTL is measured in seconds.”** On an IPv4 packet, TTL is a hop counter. Routers decrease it by 1.
+- **“ping and tracert prove every application works.”** They prove ICMP reachability and the router path. Firewalls can block ICMP while web traffic still works, or the reverse.
+- **“netstat -b works in a normal prompt.”** Showing the executable needs an administrator Command Prompt.
+- **“net view tests an IP route.”** `net view`, `net use`, and `net user` are Windows share/account commands. Use ping/tracert/pathping for the IP path.
+- **“pathping is a faster ping.”** Phase one maps hops; phase two measures loss and can take several minutes.
+- **“No internet means the NIC has no IP.”** You can have a valid LAN IP and still fail DNS or upstream routing — test each layer.
 
 ## Quick Review
 
 | Topic | Remember |
 | --- | --- |
+| Workflow | Config → gateway → IP beyond LAN → DNS → connections → path |
 | Address | `ipconfig`, then `ipconfig /all` |
 | Reachability | `ping` — ICMP, four tries, loss and round-trip time |
 | Connections | `netstat`; `-a` all, `-b` program (admin), `-n` numbers only |
